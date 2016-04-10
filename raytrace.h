@@ -87,7 +87,7 @@ inline void InitShapes()
     pObjectList.push_back(&rwall1);
     pObjectList.push_back(&rwall2);
 
-    Sphere Sphere1(vec3(350, 200, 50), 30, vec3(255, 30, 0));
+    Sphere Sphere1(vec3(400, 400, 50), 45, vec3(255, 30, 0));
     Sphere Sphere2(vec3(200, 200, 200), 100, vec3(153, 0, 76));
 
     pObjectList.push_back(&Sphere1);
