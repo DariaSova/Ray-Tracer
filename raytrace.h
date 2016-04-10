@@ -59,20 +59,20 @@ inline void InitShapes()
 {
 
 
-    Plane lwall1(vec3(1, 0, 0), vec3(0, 0, 0), vec3(0, 512, 0), vec3(0, 512, 512), vec3(255, 0, 0));
-    Plane lwall2(vec3(1, 0, 0), vec3(0, 0, 0), vec3(0, 512, 512), vec3(0, 0, 512), vec3(255, 0, 0));
+    Plane lwall1(vec3(1, 0, 0), vec3(0, 0, 0), vec3(0, 512, 0), vec3(0, 512, 512), vec3(255, 128, 0));
+    Plane lwall2(vec3(1, 0, 0), vec3(0, 0, 0), vec3(0, 512, 512), vec3(0, 0, 512), vec3(255, 128, 0));
 
-    Plane rwall1(vec3(-1, 0, 0), vec3(512, 0, 0), vec3(512, 512, 0), vec3(512, 512, 512), vec3(0, 0, 255));
-    Plane rwall2(vec3(-1, 0, 0), vec3(512, 0, 0), vec3(512, 512, 512), vec3(512, 0, 512), vec3(0, 0, 255));
+    Plane rwall1(vec3(-1, 0, 0), vec3(512, 0, 0), vec3(512, 512, 0), vec3(512, 512, 512), vec3(102, 204, 0));
+    Plane rwall2(vec3(-1, 0, 0), vec3(512, 0, 0), vec3(512, 512, 512), vec3(512, 0, 512), vec3(102, 204, 0));
 
-    Plane bwall1(vec3(0, 0, -1), vec3(0, 0, 512), vec3(0, 512, 512), vec3(512, 512, 512), vec3(0, 255, 0));
-    Plane bwall2(vec3(0, 0, -1), vec3(0, 0, 512), vec3(512, 512, 512), vec3(512, 0, 512), vec3(0, 255, 0));
+    Plane bwall1(vec3(0, 0, -1), vec3(0, 0, 512), vec3(0, 512, 512), vec3(512, 512, 512), vec3(204, 0, 0));
+    Plane bwall2(vec3(0, 0, -1), vec3(0, 0, 512), vec3(512, 512, 512), vec3(512, 0, 512), vec3(204, 0, 0));
 
-    Plane ceiling1(vec3(0, -1, 0), vec3(0, 512, 0), vec3(0, 512, 512), vec3(512, 512, 512), vec3(0, 255, 255));
-    Plane ceiling2(vec3(0, -1, 0), vec3(0, 512, 0), vec3(512, 512, 512), vec3(512, 512, 0), vec3(0, 255, 255));
+    Plane ceiling1(vec3(0, -1, 0), vec3(0, 512, 0), vec3(0, 512, 512), vec3(512, 512, 512), vec3(76, 0, 153));
+    Plane ceiling2(vec3(0, -1, 0), vec3(0, 512, 0), vec3(512, 512, 512), vec3(512, 512, 0), vec3(76, 0, 153));
 
-    Plane floor1(vec3(0, 1, 0), vec3(0, 0, 0), vec3(0, 0, 512), vec3(512, 0, 512), vec3(255, 0, 255));
-    Plane floor2(vec3(0, 1, 0), vec3(0, 0, 0), vec3(512, 0, 512), vec3(512, 0, 0), vec3(255, 0, 255));
+    Plane floor1(vec3(0, 1, 0), vec3(0, 0, 0), vec3(0, 0, 512), vec3(512, 0, 512), vec3(204, 204, 0));
+    Plane floor2(vec3(0, 1, 0), vec3(0, 0, 0), vec3(512, 0, 512), vec3(512, 0, 0), vec3(204, 204, 0));
 
 
 
@@ -87,8 +87,8 @@ inline void InitShapes()
     pObjectList.push_back(&rwall1);
     pObjectList.push_back(&rwall2);
 
-    Sphere Sphere1(vec3(350, 200, 50), 30, vec3(60, 100, 200));
-    Sphere Sphere2(vec3(200, 200, 200), 100, vec3(90, 20, 0));
+    Sphere Sphere1(vec3(350, 200, 50), 30, vec3(255, 30, 0));
+    Sphere Sphere2(vec3(200, 200, 200), 100, vec3(153, 0, 76));
 
     pObjectList.push_back(&Sphere1);
     pObjectList.push_back(&Sphere2);
@@ -102,50 +102,6 @@ inline void InitShapes()
     pLightList.push_back(&Light1);
     pLightList.push_back(&Light2);
 
-    struct ObjectStruct LeftWall1;
-    LeftWall1.TriangleInit(vec3(1, 0, 0), vec3(0, 0, 0), vec3(0, 512, 0), vec3(0, 512, 512), vec3(255, 0, 0));
-    struct ObjectStruct LeftWall2;
-    LeftWall2.TriangleInit(vec3(1, 0, 0), vec3(0, 0, 0), vec3(0, 512, 512), vec3(0, 0, 512), vec3(255, 0, 0));
-
-    struct ObjectStruct RightWall1;
-    RightWall1.TriangleInit(vec3(-1, 0, 0), vec3(512, 0, 0), vec3(512, 512, 0), vec3(512, 512, 512), vec3(0, 0, 255));
-    struct ObjectStruct RightWall2;
-    RightWall2.TriangleInit(vec3(-1, 0, 0), vec3(512, 0, 0), vec3(512, 512, 512), vec3(512, 0, 512), vec3(0, 0, 255));
-
-    struct ObjectStruct BackWall1;
-    BackWall1.TriangleInit(vec3(0, 0, -1), vec3(0, 0, 512), vec3(0, 512, 512), vec3(512, 512, 512), vec3(0, 255, 0));
-    struct ObjectStruct BackWall2;
-    BackWall2.TriangleInit(vec3(0, 0, -1), vec3(0, 0, 512), vec3(512, 512, 512), vec3(512, 0, 512), vec3(0, 255, 0));
-
-    struct ObjectStruct Roof1;
-    Roof1.TriangleInit(vec3(0, -1, 0), vec3(0, 512, 0), vec3(0, 512, 512), vec3(512, 512, 512), vec3(0, 255, 255));
-    struct ObjectStruct Roof2;
-    Roof2.TriangleInit(vec3(0, -1, 0), vec3(0, 512, 0), vec3(512, 512, 512), vec3(512, 512, 0), vec3(0, 255, 255));
-
-    struct ObjectStruct Floor1;
-    Floor1.TriangleInit(vec3(0, 1, 0), vec3(0, 0, 0), vec3(0, 0, 512), vec3(512, 0, 512), vec3(255, 0, 255));
-    struct ObjectStruct Floor2;
-    Floor2.TriangleInit(vec3(0, 1, 0), vec3(0, 0, 0), vec3(512, 0, 512), vec3(512, 0, 0), vec3(255, 0, 255));
-
-
-    struct ObjectStruct Sphere11;
-    Sphere11.SphereInit(30, vec3(350, 200, 50), vec3(60, 100, 200));
-    struct ObjectStruct Sphere22;
-    Sphere22.SphereInit(100, vec3(200, 200, 200), vec3(90, 20, 0));
-
-    ObjectList.push_back(Sphere11);
-    ObjectList.push_back(Sphere22);
-
-    ObjectList.push_back(Floor1);
-    ObjectList.push_back(Floor2);
-    ObjectList.push_back(Roof1);
-    ObjectList.push_back(Roof2);
-    ObjectList.push_back(BackWall1);
-    ObjectList.push_back(BackWall2);
-    ObjectList.push_back(RightWall1);
-    ObjectList.push_back(RightWall2);
-    ObjectList.push_back(LeftWall1);
-    ObjectList.push_back(LeftWall2);
 
 }
 
