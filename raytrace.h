@@ -177,8 +177,8 @@ inline bool CalcClosestIntersection(vec3 Direction)
     bool IntersectCheck = false;
     for (int i = 0; i < pObjectList.size(); ++i)
     {
-        if(i==6)
-            continue;
+        //if(i==6)
+        //    continue;
         float t;
         vec3 Normal;
         vec3 Temp;
@@ -219,8 +219,8 @@ inline int CalcLight(int NumShadows, vec3 Direction)
        // {
         //    continue;
         //}
-        if(k==6)
-            continue;
+       // if(k==6)
+       //     continue;
 
         //InitShapes();
         float t;
