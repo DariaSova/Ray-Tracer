@@ -2,6 +2,7 @@
 #include "Image.h"
 #include "plane.h"
 #include "sphere.h"
+#include "light.h"
 #include <deque>
 #include <glm/vec3.hpp> // glm::vec3
 #include <glm/vec4.hpp>
@@ -12,6 +13,7 @@ using namespace glm;
 ObjectStruct Ref;
 std::deque<ObjectStruct> ObjectList;
 std::vector<Object *> pObjectList;
+std::vector<Light *> pLightList;
 std::vector<Object *> RefObjectList;
 std::deque<LightStruct> LightList;
 
@@ -92,11 +94,13 @@ inline void InitShapes()
     pObjectList.push_back(&Sphere2);
 
 
-    struct LightStruct Light1(256, 256, -200);
-    struct LightStruct Light2(300, 200, -150);
+    //struct LightStruct
+    Light Light1(vec3(256, 256, -200), vec3(0,0,0), vec3(0,0,0), 0.0, false);
+    //struct LightStruct
+    Light Light2(vec3(300, 200, -150), vec3(0,0,0), vec3(0,0,0), 0.0, false);
 
-    LightList.push_back(Light1);
-    LightList.push_back(Light2);
+    pLightList.push_back(&Light1);
+    pLightList.push_back(&Light2);
 
     struct ObjectStruct LeftWall1;
     LeftWall1.TriangleInit(vec3(1, 0, 0), vec3(0, 0, 0), vec3(0, 512, 0), vec3(0, 512, 512), vec3(255, 0, 0));
@@ -203,11 +207,11 @@ inline int CalcLight(int NumShadows, vec3 Direction)
 
     vec3 Intersection = Direction * TMin;
     Intersection = Intersection + Camera;
-    for (int k = 0; k < LightList.size(); k++)
+    for (int k = 0; k < pLightList.size(); k++)
     {
-        LightList[k].LightVector = LightList[k].Light - Intersection;
-        LightList[k].Length = length(LightList[k].LightVector);
-        LightList[k].LightVector = normalize(LightList[k].LightVector);
+        pLightList[k]->LightVector = pLightList[k]->Lightpos - Intersection;
+        pLightList[k]->Length = length(pLightList[k]->LightVector);
+        pLightList[k]->LightVector = normalize(pLightList[k]->LightVector);
     }
     for (int k = 0; k < pObjectList.size(); ++k)
     {
@@ -224,24 +228,24 @@ inline int CalcLight(int NumShadows, vec3 Direction)
         vec3 Temp;
         bool IntersectCheck;
 
-        for (int i = 0; i < LightList.size(); i++)
+        for (int i = 0; i < pLightList.size(); i++)
         {
-            LightList[i].EyeVector = Intersection + (LightList[i].LightVector * 2.0f);
+            pLightList[i]->EyeVector = Intersection + (pLightList[i]->LightVector * 2.0f);
 
-            IntersectCheck = pObjectList[k]->Intersect(LightList[i].EyeVector, LightList[i].LightVector, &t, &Normal, &Temp);
-            //else IntersectCheck = pObjectList[k].IsPlaneIntersect(LightList[i].EyeVector, LightList[i].LightVector, &t, &Normal, &Temp);
+            IntersectCheck = pObjectList[k]->Intersect(pLightList[i]->EyeVector, pLightList[i]->LightVector, &t, &Normal, &Temp);
+            //else IntersectCheck = pObjectList[k].IsPlaneIntersect(pLightList[i].EyeVector, pLightList[i].LightVector, &t, &Normal, &Temp);
 
-            if (IntersectCheck && t < LightList[i].Length)
+            if (IntersectCheck && t < pLightList[i]->Length)
             {
-                LightList[i].IsBlocked = true;
+                pLightList[i]->IsBlocked = true;
                 NumShadows++;
             }
         }
     }
 
-    for (int i = 0; i < LightList.size(); i++)
+    for (int i = 0; i < pLightList.size(); i++)
     {
-        LightList[i].IsBlocked = false;
+        pLightList[i]->IsBlocked = false;
     }
     return NumShadows;
 }
@@ -250,9 +254,9 @@ inline void CalcColour(int NumShadows)
 {
     float DiffuseTerm = 0;
     int i;
-    for (i = 0; i < LightList.size(); i++)
+    for (i = 0; i < pLightList.size(); i++)
     {
-        DiffuseTerm += dot(LightList[i].LightVector, NormMin);
+        DiffuseTerm += dot(pLightList[i]->LightVector, NormMin);
     }
     DiffuseTerm = DiffuseTerm / i;
     if (DiffuseTerm > 0)
