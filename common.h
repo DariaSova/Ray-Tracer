@@ -218,7 +218,7 @@ public:
         vec3 Light;
         vec3 LightVector;
         vec3 EyeVector;
-        float Length = 0;
+        float Length;
         bool IsBlocked;
 
         LightStruct(float x, float y, float z)

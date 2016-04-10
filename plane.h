@@ -3,6 +3,7 @@
 #endif
 #include <math.h>
 #include <vector>
+#include "object.h"
 using namespace glm;
 
 class Plane : public Object {
@@ -36,9 +37,8 @@ bool Intersect(vec3 Origin, vec3 Direction,
   if(f * dot(e2, q)>0)
   {
     *t = f * dot(e2, q);
-    *tpix = ObjectColor;
+    *tpix = Color;
     *normal = Normal;
-
     return true;
   }
   else
