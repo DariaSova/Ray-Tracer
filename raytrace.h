@@ -1,21 +1,18 @@
-#include "common.h"
+#include <iostream>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+#include <glm/matrix.hpp>
+#include <glm/mat3x3.hpp>
+#include <string>
 #include "Image.h"
 #include "plane.h"
 #include "sphere.h"
 #include "light.h"
-#include <deque>
-#include <glm/vec3.hpp> // glm::vec3
-#include <glm/vec4.hpp>
-#include <glm/matrix.hpp>
-#include <glm/mat3x3.hpp>
+
 using namespace glm;
 
-ObjectStruct Ref;
-std::deque<ObjectStruct> ObjectList;
 std::vector<Object *> pObjectList;
 std::vector<Light *> pLightList;
-std::vector<Object *> RefObjectList;
-std::deque<LightStruct> LightList;
 
 float TMin = 99999999;
 vec3 NormMin;
@@ -23,20 +20,9 @@ vec3 PixelColour;
 Pixel px;
 vec3 DirArray[4];
 vec3 PixelArray[4];
+vec3 Camera(256, 256, -400);
+vec3 DiffuseColour(255, 128, 128);
 
-inline void CopyObject(ObjectStruct a, ObjectStruct b)
-{
-    a.Object = b.Object;
-    a.Radius = b.Radius;
-    a.Center = b.Center;
-    a.SphereColour = b.SphereColour;
-    a.Normal = b.Normal;
-    a.v0 = b.v0;
-    a.v1 = b.v1;
-    a.v2 = b.v2;
-    a.Point = b.Point;
-    a.PlaneColour = b.PlaneColour;
-}
 
 inline void SetColour(Pixel& px, vec3 CalculatedColor)
 {
@@ -133,12 +119,10 @@ inline bool CalcClosestIntersection(vec3 Direction)
     bool IntersectCheck = false;
     for (int i = 0; i < pObjectList.size(); ++i)
     {
-        //if(i==6)
-        //    continue;
+
         float t;
         vec3 Normal;
         vec3 Temp;
-//bool DoesIntersect = pObjectList[k]->Intersect(Camera, Direction, &t, &normal, &Temp);
 
         bool DoesIntersect;
         DoesIntersect = pObjectList[i]->Intersect(Camera, Direction, &t, &Normal, &Temp);
@@ -149,7 +133,6 @@ inline bool CalcClosestIntersection(vec3 Direction)
             if (TMin > t)
             {
                 PixelColour = Temp;
-                //RefObjectList[0] = pObjectList[i];
                 TMin = t;
                 NormMin = Normal;
             }
@@ -171,14 +154,6 @@ inline int CalcLight(int NumShadows, vec3 Direction)
     }
     for (int k = 0; k < pObjectList.size(); ++k)
     {
-       // if (pObjectList[k] == RefObjectList[0])
-       // {
-        //    continue;
-        //}
-       // if(k==6)
-       //     continue;
-
-        //InitShapes();
         float t;
         vec3 Normal;
         vec3 Temp;
@@ -189,7 +164,6 @@ inline int CalcLight(int NumShadows, vec3 Direction)
             pLightList[i]->EyeVector = Intersection + (pLightList[i]->LightVector * 2.0f);
 
             IntersectCheck = pObjectList[k]->Intersect(pLightList[i]->EyeVector, pLightList[i]->LightVector, &t, &Normal, &Temp);
-            //else IntersectCheck = pObjectList[k].IsPlaneIntersect(pLightList[i].EyeVector, pLightList[i].LightVector, &t, &Normal, &Temp);
 
             if (IntersectCheck && t < pLightList[i]->Length)
             {
