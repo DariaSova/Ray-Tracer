@@ -13,6 +13,7 @@ using namespace glm;
 
 std::vector<Object *> pObjectList;
 std::vector<Light *> pLightList;
+std::vector<Light *> pLightList2;
 
 float t_min = 99999999;
 vec3 Norm_min;
@@ -23,80 +24,25 @@ vec3 PixelArray[4];
 vec3 Camera(256, 256, -400);
 vec3 DiffuseColour(255, 128, 128);
 
-/*inline vec3 CalcReflection(vec3 IP, vec3 r)
-{
-    bool IntersectCheck = false;
-    vec3 Colour;
-    for (int i = 0; i < pObjectList.size(); ++i)
-    {
-        float t;
-        vec3 Normal;
-        vec3 Temp;
-        bool DoesIntersect;
-        //if (pObjectList[i].Object == 0) DoesIntersect = pObjectList[i].IsSphereIntersect(IP, r, &t, &Normal, &Temp);
-        DoesIntersect = pObjectList[i]->Intersect(IP, r, &t, &Normal, &Temp);
+vec3 IP_global(0,0,0);
+vec3 r_global(0,0,0);
+bool reflects_global=false;
 
-
-        if (DoesIntersect)
-        {
-            IntersectCheck = true;
-            if (t_min > t)
-            {
-                Colour = Temp;
-                t_min = t;
-            }
-        }
-    }
-
-    if (!IntersectCheck) return vec3(0, 0, 0) - DiffuseColour;
-    return Colour;
-}*/
-inline vec3 Reflection(vec3 IP, vec3 r)
-{
-    vec3 Color(0,0,0);
-    bool IntersectCheck = false;
-    for (int i = 0; i < pObjectList.size(); ++i)
-    {
-
-        float t;
-        vec3 Normal;
-        vec3 Temp;
-
-        bool DoesIntersect;
-        DoesIntersect = pObjectList[i]->Intersect(IP, r, &t, &Normal, &Temp);
-
-        if (DoesIntersect)
-        {
-            IntersectCheck = true;
-            if (t_min > t)
-            {
-
-                Color = Temp;
-                t_min = t;
-                Norm_min = Normal;
-            }
-        }
-
-    }
-    return Color;
-}
 
 inline vec3 CalcReflection(vec3 IP, vec3 r)
 {
-    float TMin2 = 999999;
+    float TMin2 = 9999999;
     vec3 NormMin2;
     vec3 PixelColour2;
     bool IntersectCheck = false;
     vec3 Colour;
-    for (int j = 0; j < pObjectList.size(); j++)
+    for (int i = 0; i < pObjectList.size(); i++)
     {
-
         float t;
         vec3 Normal;
         vec3 Temp;
         bool DoesIntersect;
-        DoesIntersect = pObjectList[j]->Intersect(IP, r, &t, &Normal, &Temp);
-
+        DoesIntersect = pObjectList[i]->Intersect(IP, r, &t, &Normal, &Temp);
 
         if (DoesIntersect)
         {
@@ -109,12 +55,10 @@ inline vec3 CalcReflection(vec3 IP, vec3 r)
         }
     }
 
-    if (!IntersectCheck) return vec3(0, 0, 0) - DiffuseColour;
-    if (IntersectCheck)
-    {
+   // if (!IntersectCheck) return vec3(0, 0, 0) - DiffuseColour;
+    //if (IntersectCheck)
+    //{
         int NumShadows = 0;
-
-
         vec3 Intersection = r * TMin2;
         Intersection = Intersection + IP;
         for (int k = 0; k < pLightList.size(); k++)
@@ -123,9 +67,8 @@ inline vec3 CalcReflection(vec3 IP, vec3 r)
             pLightList[k]->Length = length(pLightList[k]->LightVector);
             pLightList[k]->LightVector = normalize(pLightList[k]->LightVector);
         }
-        for (int k = 0; k < pObjectList.size(); ++k)
+        for (int k = 0; k < pObjectList.size(); k++)
         {
-
             float t;
             vec3 Normal;
             vec3 Temp;
@@ -133,16 +76,14 @@ inline vec3 CalcReflection(vec3 IP, vec3 r)
 
             for (int i = 0; i < pLightList.size(); i++)
             {
-
                 pLightList[i]->EyeVector = Intersection + (pLightList[i]->LightVector * 2.0f);
 
-
-                //if (pObjectList[k].Object == 0) IntersectCheck = pObjectList[k].IsSphereIntersect(pLightList[i].EyeVector, pLightList[i].LightVector, &t, &Normal, &Temp);
+                //if (pObjectList[k]->Object == 0) IntersectCheck = pObjectList[k]->IsSphereIntersect(pLightList[i]->EyeVector, pLightList[i]->LightVector, &t, &Normal, &Temp);
                 IntersectCheck = pObjectList[k]->Intersect(pLightList[i]->EyeVector, pLightList[i]->LightVector, &t, &Normal, &Temp);
 
                 if (IntersectCheck && t < pLightList[i]->Length)
                 {
-                    pLightList[i]->IsBlocked = true;
+                    //pLightList[i]->IsBlocked = true;
                     NumShadows++;
                 }
             }
@@ -158,7 +99,7 @@ inline vec3 CalcReflection(vec3 IP, vec3 r)
         DiffuseTerm = DiffuseTerm / i;
         if (DiffuseTerm > 0)
         {
-            //*0.5
+            //*0->5
             vec3 PixelDiffuseColour = DiffuseColour * DiffuseTerm;
             PixelColour2 = PixelColour2 + PixelDiffuseColour;
         }
@@ -166,15 +107,16 @@ inline vec3 CalcReflection(vec3 IP, vec3 r)
         for (i = 0; i < NumShadows; i++)
         {
             //Shadow Intensity
-            PixelColour2 = PixelColour2 * 0.4f;
+            PixelColour2 = PixelColour2 * 0.3f;
         }
         Colour = PixelColour2;
-    }
-    else
-    {
-        Colour = vec3(0, 0, 0);
-    }
+    //}
+    //else
+    //{
+    //    Colour = vec3(0, 0, 0);
+    //}
     return Colour;
+
 }
 
 inline void SetColour(Pixel& px, vec3 CalculatedColor)
@@ -237,6 +179,8 @@ inline void InitializeObjects()
 
     pLightList.push_back(&Light1);
     pLightList.push_back(&Light2);
+    pLightList2.push_back(&Light1);
+    pLightList2.push_back(&Light2);
 
 
 }
@@ -263,49 +207,6 @@ inline void InitializeAntiAliasing(float xp, float yp, vec3 DirArray[4])
     Direction = normalize(Direction);
     DirArray[3] = Direction;
 }
-
-inline bool ClosestIntersection(vec3 Direction)
-{
-    bool IntersectCheck = false;
-    for (int i = 0; i < pObjectList.size(); ++i)
-    {
-
-        float t;
-        vec3 Normal;
-        vec3 Temp;
-
-        bool DoesIntersect;
-        DoesIntersect = pObjectList[i]->Intersect(Camera, Direction, &t, &Normal, &Temp);
-
-        if (DoesIntersect)
-        {
-            IntersectCheck = true;
-            if (t_min > t)
-            {
-                /*if (pObjectList[i].reflect == true)
-                {
-                    vec3 IntersectionPoint = pObjectList[i].ip;
-                    vec3 r = Direction - 2 * dot(Direction, ObjectList[i].Normal) * ObjectList[i].Normal;
-                        Temp  = CalcReflection(IntersectionPoint, r);
-                 }*/
-                //calc reflection colour
-                if (pObjectList[i]->Reflect == true)
-                {
-                    vec3 IntersectionPoint = pObjectList[i]->IntP;
-                    vec3 r = Direction - 2 * dot(Direction, pObjectList[i]->Normal) * pObjectList[i]->Normal;
-                    Temp  = Reflection(IntersectionPoint, r);
-                }
-
-
-                PixelColour = Temp;
-                t_min = t;
-                Norm_min = Normal;
-            }
-        }
-    }
-    return IntersectCheck;
-}
-
 inline int CalculateLight(int NumShadows, vec3 Direction)
 {
 
@@ -332,18 +233,187 @@ inline int CalculateLight(int NumShadows, vec3 Direction)
 
             if (IntersectCheck && t < pLightList[i]->Length)
             {
+                NumShadows++;
+            }
+        }
+    }
+    return NumShadows;
+}
+
+inline vec3 Reflection(vec3 IP, vec3 r)
+{
+    int ShadowsNum=0;
+    vec3 Color(0,0,0);
+    float t_min2 = 99999999;
+    vec3 Norm_min2;
+    bool IntersectCheck = false;
+    for (int i = 0; i < pObjectList.size(); i++)
+    {
+        float t;
+        vec3 Normal;
+        vec3 Temp;
+
+        bool DoesIntersect;
+        DoesIntersect = pObjectList[i]->Intersect(IP, r, &t, &Normal, &Temp);
+
+        if (DoesIntersect)
+        {
+            IntersectCheck = true;
+            if (t_min2 > t)
+            {
+                Color = Temp;
+                t_min2 = t;
+                //Norm_min2 = Normal;
+            }
+        }
+    }
+    int NumShadows = 0;
+    vec3 Intersection = r * t_min2;
+    Intersection = Intersection + IP;
+    for (int k = 0; k < pLightList.size(); k++)
+    {
+        pLightList[k]->LightVector = pLightList[k]->Lightpos - Intersection;
+        pLightList[k]->Length = length(pLightList[k]->LightVector);
+        pLightList[k]->LightVector = normalize(pLightList[k]->LightVector);
+    }
+    for (int k = 0; k < pObjectList.size(); k++)
+    {
+        float t;
+        vec3 Normal;
+        vec3 Temp;
+        bool IntersectCheck;
+
+        for (int i = 0; i < pLightList.size(); i++)
+        {
+            pLightList[i]->EyeVector = Intersection + (pLightList[i]->LightVector * 2.0f);
+
+            //if (pObjectList[k]->Object == 0) IntersectCheck = pObjectList[k]->IsSphereIntersect(pLightList[i]->EyeVector, pLightList[i]->LightVector, &t, &Normal, &Temp);
+            IntersectCheck = pObjectList[k]->Intersect(pLightList[i]->EyeVector, pLightList[i]->LightVector, &t, &Normal, &Temp);
+
+            if (IntersectCheck && t < pLightList[i]->Length)
+            {
                 //pLightList[i]->IsBlocked = true;
                 NumShadows++;
             }
         }
     }
 
-    /*for (int i = 0; i < pLightList.size(); i++)
+
+    float DiffuseTerm = 0;
+    int i;
+    for (i = 0; i < pLightList.size(); i++)
     {
-        pLightList[i]->IsBlocked = false;
+        DiffuseTerm += dot(pLightList[i]->LightVector, Norm_min2);
+    }
+    DiffuseTerm = DiffuseTerm / i;
+    if (DiffuseTerm > 0)
+    {
+        //*0->5
+        vec3 PixelDiffuseColour = DiffuseColour * DiffuseTerm;
+        Color = Color + PixelDiffuseColour;
+    }
+
+    for (i = 0; i < NumShadows; i++)
+    {
+        //Shadow Intensity
+        Color = Color * 0.3f;
+    }
+
+    /*if (!IntersectCheck) return vec3(0, 0, 0) - DiffuseColour;
+    else
+    {
+        vec3 Intersection = r * t_min;
+        Intersection = Intersection + Camera;
+        for (int k = 0; k < pLightList.size(); k++)
+        {
+            pLightList[k]->LightVector = pLightList[k]->Lightpos - Intersection;
+            pLightList[k]->Length = length(pLightList[k]->LightVector);
+            pLightList[k]->LightVector = normalize(pLightList[k]->LightVector);
+        }
+        for (int k = 0; k < pObjectList.size(); ++k)
+        {
+            float t;
+            vec3 Normal;
+            vec3 Temp;
+            bool IntersectCheck;
+
+            for (int i = 0; i < pLightList.size(); i++)
+            {
+                pLightList[i]->EyeVector = Intersection + (pLightList[i]->LightVector * 2.0f);
+
+                IntersectCheck = pObjectList[k]->Intersect(pLightList[i]->EyeVector, pLightList[i]->LightVector, &t, &Normal, &Temp);
+
+                if (IntersectCheck && t < pLightList[i]->Length)
+                {
+                    ShadowsNum++;
+                }
+            }
+        }
+
+        float DiffuseTerm = 0;
+        int i;
+        for (i = 0; i < pLightList.size(); i++)
+        {
+            DiffuseTerm += dot(pLightList[i]->LightVector, Norm_min);
+        }
+        DiffuseTerm = DiffuseTerm / i;
+        if (DiffuseTerm > 0)
+        {
+            vec3 PixelDiffuseColour = DiffuseColour * DiffuseTerm;
+            Color = Color + PixelDiffuseColour;
+        }
+
+        for (i = 0; i < ShadowsNum; i++)
+        {
+            //Shadow Intensity
+            Color = Color * 0.3f;
+        }
     }*/
-    return NumShadows;
+
+    return Color;
 }
+
+inline bool ClosestIntersection(vec3 Direction)
+{
+    bool IntersectCheck = false;
+    for (int i = 0; i < pObjectList.size(); ++i)
+    {
+
+        float t;
+        vec3 Normal;
+        vec3 Temp;
+
+        bool DoesIntersect;
+        DoesIntersect = pObjectList[i]->Intersect(Camera, Direction, &t, &Normal, &Temp);
+
+        if (DoesIntersect)
+        {
+            IntersectCheck = true;
+            if (t_min > t)
+            {
+                //calc reflection colour
+                if (pObjectList[i]->Reflect == true)
+                {
+                    vec3 IntersectionPoint = pObjectList[i]->IntP;
+                    vec3 r = Direction - 2 * dot(Direction, pObjectList[i]->Normal) * pObjectList[i]->Normal;
+                    Temp  = Reflection(IntersectionPoint, r);
+                    reflects_global=true;
+                    r_global=r;
+                    IP_global = IntersectionPoint;
+
+                }
+                else
+                    reflects_global=false;
+
+                PixelColour = Temp;
+                t_min = t;
+                Norm_min = Normal;
+            }
+        }
+    }
+    return IntersectCheck;
+}
+
 
 inline void CalculateColor(int NumShadows)
 {
@@ -388,8 +458,9 @@ inline void RayTrace(Image* pImage)
                 {
                     int ShadowsNum = 0;
                     ShadowsNum = CalculateLight(ShadowsNum, DirArray[k]);
-
                     CalculateColor(ShadowsNum);
+                    //if(reflects_global==true)
+                    //    PixelColour= Reflection(IP_global, r_global);
                     PixelArray[k] = PixelColour;
                     NotBackground = true;
                 }
@@ -400,9 +471,6 @@ inline void RayTrace(Image* pImage)
             }
             if (NotBackground){
                 vec3 ColourTemp = PixelArray[0] + PixelArray[1] + PixelArray[2] + PixelArray[3];
-                //ColourTemp = ColourTemp + PixelArray[2];
-                //ColourTemp = ColourTemp + PixelArray[3];
-
                 ColourTemp /= 4.0f;
 
                 SetColour(px, ColourTemp);
