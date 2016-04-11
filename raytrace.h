@@ -199,16 +199,16 @@ inline int CalculateLight(int NumShadows, vec3 Direction)
 
             if (IntersectCheck && t < pLightList[i]->Length)
             {
-                pLightList[i]->IsBlocked = true;
+                //pLightList[i]->IsBlocked = true;
                 NumShadows++;
             }
         }
     }
 
-    for (int i = 0; i < pLightList.size(); i++)
+    /*for (int i = 0; i < pLightList.size(); i++)
     {
         pLightList[i]->IsBlocked = false;
-    }
+    }*/
     return NumShadows;
 }
 
@@ -250,7 +250,7 @@ inline void RayTrace(Image* pImage)
             //anti-ailiasing
             for (int k = 0; k < 4; k++){
                 t_min = 999999;
-                //check if and what ray is intersecting
+                //check ray intersections
                 if (ClosestIntersection(DirArray[k]))
                 {
                     int ShadowsNum = 0;
@@ -262,14 +262,13 @@ inline void RayTrace(Image* pImage)
                 }
                 else
                 {
-                    //If intersect fails paint black
                     (*pImage)(i, j) = Pixel(0, 0, 0);
                 }
             }
             if (NotBackground){
-                vec3 ColourTemp = PixelArray[0] + PixelArray[1];
-                ColourTemp = ColourTemp + PixelArray[2];
-                ColourTemp = ColourTemp + PixelArray[3];
+                vec3 ColourTemp = PixelArray[0] + PixelArray[1] + PixelArray[2] + PixelArray[3];
+                //ColourTemp = ColourTemp + PixelArray[2];
+                //ColourTemp = ColourTemp + PixelArray[3];
 
                 ColourTemp /= 4.0f;
 
