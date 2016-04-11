@@ -12,9 +12,10 @@ class Plane : public Object {
   vec3 p2;
   vec3 Normal;
   vec3 Color;
+  bool Reflect;
   public:
 
-  Plane(vec3 normal, vec3 p0, vec3 p1, vec3 p2, vec3 color): Normal(normal), p0(p0), p1(p1), p2(p2), Color(color) {}
+  Plane(vec3 normal, vec3 p0, vec3 p1, vec3 p2, vec3 color, bool reflect): Normal(normal), p0(p0), p1(p1), p2(p2), Color(color), Reflect(reflect) {}
 
 bool Intersect(vec3 Origin, vec3 Direction,
     float *t, vec3 *normal, vec3* tpix)

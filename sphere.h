@@ -4,9 +4,9 @@
 
 
 class Sphere : public Object {
-
 public:
-   Sphere(vec3 Center_in, float Radius_in, vec3 ObjectColor_in) : Object(Center_in, Radius_in, ObjectColor_in) {}
+
+   Sphere(vec3 Center_in, float Radius_in, vec3 ObjectColor_in, bool reflect_in) : Object(Center_in, Radius_in, ObjectColor_in, reflect_in) {}
 
     bool Intersect(vec3 Origin, vec3 Direction,
                            float *t, vec3 *normal, vec3* tpix)
@@ -28,7 +28,9 @@ public:
             *t = t_min;
             vec3 IntersectionPoint = Direction*(t_min);
             IntersectionPoint = IntersectionPoint + Origin;
+            IntP= IntersectionPoint;
             vec3 SurfaceNormal = IntersectionPoint - Center;
+            Normal = normalize(SurfaceNormal);
             (*normal) = normalize(SurfaceNormal);
             *tpix = ObjectColor;
             return true;
