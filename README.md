@@ -1,21 +1,9 @@
-## ImageKit Update 1
+## Ray Tracer in C++ 
 This project implements teaching frameworks for an introductory computer graphics course.
 
 1. Class **"Image"** implements a simple matlab-like syntax for generating/showing/saving images. The image is shown on screen using GLFW and openGL. The image is saved to disk using libpng and zlib.
  
-2. Class **"Canvas"** implements a simple warpping over GLFW3. Students can simply fill in a few callbacks in main.cpp. Includes:
-
-  -. OnPaint
-
-  -. MouseMove
-
-  -. MouseButton
-
-  -. KeyPress
-
-  -. OnTimer
-
-Please see main.cpp for the usage demo.
+2. Class **"Canvas"** implements a simple warpping over GLFW3. Students can simply fill in a few callbacks in main.cpp.
 
 This framework has been tested on the following platforms :
 
@@ -24,8 +12,16 @@ This framework has been tested on the following platforms :
 
 To run this framework on any other platforms, the required libraries need to be recompiled according to the target OS.
 
-###Useful links:
-- GLFW: [http://www.glfw.org/]
-- GLEW: [http://glew.sourceforge.net/] (only required on Windows)
-- libpng: [http://libpng.org/pub/png/libpng.html]
-- zlib: [http://www.zlib.net/]
+### Description of what have been implemented:
+The program ourputs an image that renders:
+  * Cornell boxen closing the scene
+  * Two spheres
+  * Diffuse shading
+  * Hard shadows
+  * Reflections
+  * Two light sources
+  * Jittering
+
+###Image output:
+
+![Alt text](sample.png "Ray Tracer output")
