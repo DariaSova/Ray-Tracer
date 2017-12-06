@@ -22,6 +22,6 @@ The program ourputs an image that renders:
   * Two light sources
   * Jittering
 
-###Image output:
+### Image output:
 
 ![Alt text](sample.png "Ray Tracer output")
